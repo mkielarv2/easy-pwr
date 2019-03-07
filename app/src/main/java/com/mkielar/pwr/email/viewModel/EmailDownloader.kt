@@ -1,13 +1,14 @@
-package com.mkielar.pwr
+package com.mkielar.pwr.email.viewModel
 
 import android.app.Application
+import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.database.AppDatabase
 import io.reactivex.Completable
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 
 class EmailDownloader(private val application: Application) {
-    fun fetch(amount: Int) = Completable.create {
+    fun fetch() = Completable.create {
         val credentialsStore = CredentialsStore(application)
         val jsessionid = credentialsStore.getJsessionid()
         val appToken = credentialsStore.getAppToken()

@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.7'
     //jsoup
     implementation 'org.jsoup:jsoup:1.11.3'
+    //javascript engine
+    implementation group: 'org.mozilla', name: 'rhino', version: '1.7R4'
     //rxjava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'

@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.mkielar.pwr.credentials.InvalidCredentialsException
 import com.mkielar.pwr.email.view.EmailActivity
+import com.mkielar.pwr.email.viewModel.EmailAuthenticator
+import com.mkielar.pwr.email.viewModel.EmailDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
@@ -34,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
-                val disposable = EmailDownloader(application).fetch(100)
+                val disposable = EmailDownloader(application).fetch()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.newThread())
                     .subscribe()

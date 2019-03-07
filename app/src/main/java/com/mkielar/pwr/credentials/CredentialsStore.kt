@@ -1,4 +1,4 @@
-package com.mkielar.pwr
+package com.mkielar.pwr.credentials
 
 import `in`.co.ophio.secure.core.KeyStoreKeyGenerator
 import `in`.co.ophio.secure.core.ObscuredPreferencesBuilder

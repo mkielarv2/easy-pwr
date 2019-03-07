@@ -12,6 +12,6 @@ interface EmailDao {
     @Update
     fun update(email: Email)
 
-    @Query("SELECT * FROM Email")
+    @Query("SELECT * FROM Email ORDER BY id DESC")
     fun getEmails(): LiveData<List<Email>>
 }

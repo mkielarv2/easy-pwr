@@ -1,4 +1,4 @@
-package com.mkielar.pwr
+package com.mkielar.pwr.email.viewModel
 
 import com.mkielar.pwr.email.model.Email
 import java.util.regex.Pattern
@@ -25,9 +25,20 @@ class EmailResponseParser {
                     last = i + 1
                 }
             }
+
             //todo handle status (elements[3])
-            emails.add(Email(elements[0].toInt(), elements[1].toLong(), elements[2].toLong(), elements[4], elements[5]))
+            emails.add(
+                Email(
+                    elements[0].toInt(),
+                    elements[1].toLong(),
+                    elements[2].toLong(),
+                    removeQuotes(elements[4]),
+                    removeQuotes(elements[5])
+                )
+            )
         }
         return emails
     }
+
+    fun removeQuotes(input: String): String = input.removePrefix("'").removeSuffix("'")
 }

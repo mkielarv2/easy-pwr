@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mkielar.pwr.R
 import com.mkielar.pwr.email.model.Email
 
-class EmailRecyclerAdapter : RecyclerView.Adapter<EmailViewHolder>() {
+class EmailRecyclerAdapter(private val onItemClick: (Int) -> Unit) :
+    RecyclerView.Adapter<EmailViewHolder>() {
     private var emails: List<Email> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailViewHolder =
@@ -22,7 +23,7 @@ class EmailRecyclerAdapter : RecyclerView.Adapter<EmailViewHolder>() {
     override fun getItemCount(): Int = emails.size
 
     override fun onBindViewHolder(holder: EmailViewHolder, position: Int) {
-        holder.bind(emails[position])
+        holder.bind(emails[position], onItemClick)
     }
 
     fun setData(emails: List<Email>) {

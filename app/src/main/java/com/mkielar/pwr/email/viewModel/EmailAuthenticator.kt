@@ -1,7 +1,9 @@
-package com.mkielar.pwr
+package com.mkielar.pwr.email.viewModel
 
 import android.app.Application
 import android.util.Log
+import com.mkielar.pwr.credentials.CredentialsStore
+import com.mkielar.pwr.credentials.InvalidCredentialsException
 import io.reactivex.Completable
 import org.json.JSONObject
 import org.jsoup.Connection
