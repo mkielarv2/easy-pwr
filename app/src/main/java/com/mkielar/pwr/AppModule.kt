@@ -7,22 +7,26 @@ import com.mkielar.pwr.database.AppDatabase
 import com.mkielar.pwr.email.viewModel.*
 import org.koin.dsl.module.module
 
-val appModule = module {
-    single {
-        Room.databaseBuilder<AppDatabase>(
-            get(),
-            AppDatabase::class.java,
-            "AppDatabase.db"
-        ).build()
+abstract class AppModule {
+    companion object {
+        val appModule = module {
+            single {
+                Room.databaseBuilder<AppDatabase>(
+                    get(),
+                    AppDatabase::class.java,
+                    "AppDatabase.db"
+                ).build()
+            }
+
+            single { CredentialsStoreImpl(get()) as CredentialsStore }
+
+            single { EmailAuthenticatorImpl(get()) as EmailAuthenticator }
+
+            single { EmailDetailsParserImpl() as EmailDetailsParser }
+            single { EmailDetailsDownloaderImpl(get(), get()) as EmailDetailsDownloader }
+
+            single { EmailDownloaderImpl(get(), get(), get()) as EmailDownloader }
+            single { EmailParserImpl() as EmailParser }
+        }
     }
-
-    single { CredentialsStoreImpl(get()) as CredentialsStore }
-
-    single { EmailAuthenticatorImpl(get()) as EmailAuthenticator }
-
-    single { EmailDetailsParserImpl() as EmailDetailsParser }
-    single { EmailDetailsDownloaderImpl(get(), get()) as EmailDetailsDownloader }
-
-    single { EmailDownloaderImpl(get(), get(), get()) as EmailDownloader }
-    single { EmailParserImpl() as EmailParser }
 }

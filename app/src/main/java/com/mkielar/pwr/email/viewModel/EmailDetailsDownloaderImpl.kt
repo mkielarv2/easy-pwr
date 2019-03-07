@@ -15,13 +15,20 @@ class EmailDetailsDownloaderImpl(
         val jsessionid = credentialsStore.getJsessionid()
         val appToken = credentialsStore.getAppToken()
 
-        val execute =
-            Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/wmap/msg.mjs?rev=3&sid=&mbox=INBOX&uid=$emailId&process=html%2Cjs%2Ctarget%2Cbinhex%2Clink&security=false&lang=pl&token=$appToken&dojo.preventCache=1551875557460")
-                .cookie("JSESSIONID", jsessionid)
-                .method(Connection.Method.GET)
-                .execute()
+        val response = postRequest(emailId, appToken, jsessionid)
 
-        val emailDetails = emailDetailsParser.parse(execute.body())
+        val emailDetails = emailDetailsParser.parse(response.body())
         it.onSuccess(emailDetails)
+    }
+
+    private fun postRequest(
+        emailId: Int,
+        appToken: String?,
+        jsessionid: String?
+    ): Connection.Response {
+        return Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/wmap/msg.mjs?rev=3&sid=&mbox=INBOX&uid=$emailId&process=html%2Cjs%2Ctarget%2Cbinhex%2Clink&security=false&lang=pl&token=$appToken&dojo.preventCache=1551875557460")
+            .cookie("JSESSIONID", jsessionid)
+            .method(Connection.Method.GET)
+            .execute()
     }
 }

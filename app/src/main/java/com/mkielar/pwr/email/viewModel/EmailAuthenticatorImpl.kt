@@ -1,6 +1,5 @@
 package com.mkielar.pwr.email.viewModel
 
-import android.util.Log
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.credentials.InvalidCredentialsException
 import io.reactivex.Completable
@@ -11,7 +10,26 @@ import org.jsoup.Jsoup
 
 class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) : EmailAuthenticator {
     override fun login(login: String, password: String): Completable = Completable.create { emitter ->
-        val execute = Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/iwcp/login.iwc")
+        val response = postRequest(login, password)
+
+        val responseBody = JSONObject(response.body()).getJSONObject("iwcp")
+
+        if (isLoginSuccessful(responseBody)) {
+            storeCredentials(login, password)
+
+            val loginResponse = responseBody.getJSONObject("loginResponse")
+            val jsessionid = getJsessionid(loginResponse)
+            val token = getToken(loginResponse)
+            storeTokens(jsessionid, token)
+
+            emitter.onComplete()
+        } else {
+            emitter.onError(InvalidCredentialsException())
+        }
+    }
+
+    private fun postRequest(login: String, password: String): Connection.Response =
+        Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/iwcp/login.iwc")
             .method(Connection.Method.POST)
             .data("username", login)
             .data("password", password)
@@ -20,22 +38,17 @@ class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) : E
             .data("fmt-out", "text/json")
             .execute()
 
-        val response = JSONObject(execute.body()).getJSONObject("iwcp")
+    private fun isLoginSuccessful(responseBody: JSONObject) = responseBody.getString("error-code") == "0"
 
-        if (response.getString("error-code") == "0") {
-            credentialsStore.putCredentials(login, password)
+    private fun storeCredentials(login: String, password: String) {
+        credentialsStore.putCredentials(login, password)
+    }
 
-            val loginResponse = response.getJSONObject("loginResponse")
-            val jsessionid = loginResponse.getString("sessionIdValue")
-            val token = loginResponse.getString("appToken").replace("token=", "")
-            credentialsStore.putTokens(jsessionid, token)
+    private fun getJsessionid(loginResponse: JSONObject) = loginResponse.getString("sessionIdValue")
 
-            Log.e("jsessionid", jsessionid)
-            Log.e("token", token)
+    private fun getToken(loginResponse: JSONObject) = loginResponse.getString("appToken").replace("token=", "")
 
-            emitter.onComplete()
-        } else {
-            emitter.onError(InvalidCredentialsException())
-        }
+    private fun storeTokens(jsessionid: String, token: String) {
+        credentialsStore.putTokens(jsessionid, token)
     }
 }

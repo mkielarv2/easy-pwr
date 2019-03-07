@@ -5,16 +5,21 @@ import com.mkielar.pwr.email.model.EmailDetails
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ContextFactory
 import org.mozilla.javascript.NativeArray
+import org.mozilla.javascript.ScriptableObject
 
 class EmailDetailsParserImpl : EmailDetailsParser {
     override fun parse(response: String): EmailDetails {
-        val input = response.replace("while(1);\n", "")
+        val input = removeBlockingCode(response)
 
-        val rhino = ContextFactory().enterContext()
-        rhino.languageVersion = Context.VERSION_1_8
-        rhino.optimizationLevel = -1
+        val rhino = configureRhino()
         val scope = rhino.initStandardObjects()
-        val eval = rhino.evaluateString(scope, "$input;", "parser", 1, null)
+
+        //CAUTION!
+        //You are entering danger zone of magic parser code with spaghetti design pattern!
+        //You can dive into it but I strongly recommend you to move along because this
+        //code may cause severe headaches. Feel free to go to different part of this repository.
+        //You have been warned, proceed at your own risk...
+        val eval = evaluateJavaScript(rhino, scope, input)
         val mainArray = eval as NativeArray
         val a1 = toKotlinList(mainArray[8])
         val a2 = toKotlinList(a1[a1.size - 1])
@@ -38,6 +43,19 @@ class EmailDetailsParserImpl : EmailDetailsParser {
 
         return EmailDetails(timestamp, subject, sender, content)
     }
+
+    private fun removeBlockingCode(response: String) = response.replace("while(1);\n", "")
+
+    private fun configureRhino(): Context = ContextFactory().enterContext().apply {
+        languageVersion = Context.VERSION_1_8
+        optimizationLevel = -1
+    }
+
+    private fun evaluateJavaScript(
+        rhino: Context,
+        scope: ScriptableObject?,
+        input: String
+    ) = rhino.evaluateString(scope, "$input;", "parser", 1, null)
 
     private fun toKotlinList(obj: Any?) = (obj as NativeArray).toList()
 }
