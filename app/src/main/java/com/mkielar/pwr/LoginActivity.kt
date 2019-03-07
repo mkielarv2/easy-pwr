@@ -12,8 +12,11 @@ import com.mkielar.pwr.email.viewModel.EmailDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
+import org.koin.android.ext.android.inject
 
 class LoginActivity : AppCompatActivity() {
+    private val emailAuthenticator: EmailAuthenticator by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -32,12 +35,13 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        var disposable = EmailAuthenticator().login(application, login, password)
+        var disposable = emailAuthenticator.login(login, password)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
-                val disposable = EmailDownloader(application).fetch()
+                val emailDownloader: EmailDownloader by inject()
+                val disposable = emailDownloader.fetch()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.newThread())
                     .subscribe()

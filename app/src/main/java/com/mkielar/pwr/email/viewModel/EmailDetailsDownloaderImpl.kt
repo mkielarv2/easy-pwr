@@ -1,15 +1,17 @@
 package com.mkielar.pwr.email.viewModel
 
-import android.app.Application
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.email.model.EmailDetails
 import io.reactivex.Single
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import org.koin.standalone.KoinComponent
 
-class EmailDetalisDownloader(private val application: Application) {
-    fun fetch(emailId: Int) = Single.create<EmailDetails> {
-        val credentialsStore = CredentialsStore(application)
+class EmailDetailsDownloaderImpl(
+    private val credentialsStore: CredentialsStore,
+    private val emailDetailsParser: EmailDetailsParser
+) : KoinComponent, EmailDetailsDownloader {
+    override fun fetch(emailId: Int): Single<EmailDetails> = Single.create<EmailDetails> {
         val jsessionid = credentialsStore.getJsessionid()
         val appToken = credentialsStore.getAppToken()
 
@@ -19,7 +21,7 @@ class EmailDetalisDownloader(private val application: Application) {
                 .method(Connection.Method.GET)
                 .execute()
 
-        val emailDetails = EmailDetailsParser().parse(execute.body())
+        val emailDetails = emailDetailsParser.parse(execute.body())
         it.onSuccess(emailDetails)
     }
 }

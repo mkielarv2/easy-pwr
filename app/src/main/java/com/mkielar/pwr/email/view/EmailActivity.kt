@@ -12,8 +12,12 @@ import com.mkielar.pwr.email.viewModel.EmailViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_email.*
+import org.koin.android.ext.android.inject
 
 class EmailActivity : AppCompatActivity() {
+    private val appDatabase: AppDatabase by inject()
+    private val emailDownloader: EmailDownloader by inject()
+
     private val emailRecyclerAdapter = EmailRecyclerAdapter { index ->
         val intent = Intent(this, EmailDetailsActivity::class.java)
         intent.putExtra(EmailDetailsActivity.EMAIL_ID_KEY, index)
@@ -25,7 +29,7 @@ class EmailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_email)
 
         swipeRefresh.setOnRefreshListener {
-            EmailDownloader(application).fetch()
+            emailDownloader.fetch()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe {
@@ -35,8 +39,6 @@ class EmailActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = emailRecyclerAdapter
-
-        val appDatabase = AppDatabase.getInstance(this)
 
         EmailViewModel(appDatabase.emailDao()).emailLiveData.observe(this, Observer {
             emailRecyclerAdapter.setData(it)

@@ -3,8 +3,8 @@ package com.mkielar.pwr.email.viewModel
 import com.mkielar.pwr.email.model.Email
 import java.util.regex.Pattern
 
-class EmailResponseParser {
-    fun parse(response: String): List<Email> {
+class EmailParserImpl : EmailParser {
+    override fun parse(response: String): List<Email> {
         val pattern = Pattern.compile("\\[\\d+,\\d+,\\d+,\\d+,'.[^']+','.[^']+',\\[]]")
         val matcher = pattern.matcher(response)
         val emails = mutableListOf<Email>()
