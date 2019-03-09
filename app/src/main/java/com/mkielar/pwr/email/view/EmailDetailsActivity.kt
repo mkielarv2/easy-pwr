@@ -23,7 +23,11 @@ class EmailDetailsActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .subscribe { emailDetails ->
-                    textView.text = emailDetails.subject
+                    webView.loadData(
+                        "<html><head></head><body>${emailDetails.content}</body></html>",
+                        "text/html",
+                        "utf-8"
+                    )
                 }
         }
     }

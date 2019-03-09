@@ -21,7 +21,7 @@ class EmailParserImpl : EmailParser {
                     elements[1].toLong(),
                     elements[2].toLong(),
                     removeQuotes(elements[4]),
-                    removeQuotes(elements[5])
+                    removeQuotes(elements[5]).trim()
                 )
             )
         }
