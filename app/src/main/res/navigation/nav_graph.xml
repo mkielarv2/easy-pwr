@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.mkielar.pwr.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginActivity_to_emailFragment"
+            app:destination="@id/emailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.mkielar.pwr.email.view.EmailFragment"
+        android:label="Student Mail"
+        tools:layout="@layout/fragment_email">
+        <action
+            android:id="@+id/action_emailFragment_to_emailDetailsActivity"
+            app:destination="@id/emailDetailsFragment">
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/emailDetailsFragment"
+        android:name="com.mkielar.pwr.email.view.EmailDetailsFragment"
+        android:label="Email details"
+        tools:layout="@layout/fragment_email_details">
+        <argument
+            android:name="email_id"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
+</navigation>
