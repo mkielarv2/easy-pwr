@@ -1,46 +1,39 @@
-package com.mkielar.pwr.email.inbox.viewmodel
+package com.mkielar.pwr.email.details.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.mkielar.pwr.credentials.InvalidSessionException
-import com.mkielar.pwr.database.AppDatabase
 import com.mkielar.pwr.email.api.network.EmailAuthenticator
-import com.mkielar.pwr.email.api.network.EmailDownloader
-import com.mkielar.pwr.email.inbox.model.Email
+import com.mkielar.pwr.email.api.network.EmailDetailsDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class EmailViewModel(
-    appDatabase: AppDatabase,
-    private val emailAuthenticator: EmailAuthenticator,
-    private val emailDownloader: EmailDownloader
-) : ViewModel(),
-    Lifecycle.ViewModel {
+class DetailsViewModel(
+    private val emailDetailsDownloader: EmailDetailsDownloader,
+    private val emailAuthenticator: EmailAuthenticator
+) : ViewModel(), Lifecycle.ViewModel {
     private var viewCallback: Lifecycle.View? = null
     private var disposable: Disposable? = null
 
-    val emailLiveData: LiveData<List<Email>> = appDatabase.emailDao().getEmails()
-
-    fun requestDatabaseRefresh() {
+    override fun requestEmailDetails(emailId: Int) {
         disposable?.dispose()
-        disposable = emailDownloader.fetch()
+        disposable = emailDetailsDownloader.fetch(emailId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                viewCallback?.onRefreshComplete()
+                viewCallback?.onEmailDetailsReceived(it)
             }, {
                 if (it is InvalidSessionException) {
                     emailAuthenticator.reauth()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            requestDatabaseRefresh()
+                            requestEmailDetails(emailId)
                         }, {
-                            viewCallback?.onRefreshFailed()
+                            viewCallback?.onEmailRequestFailed()
                         })
                 } else {
-                    viewCallback?.onRefreshFailed()
+                    viewCallback?.onEmailRequestFailed()
                 }
             })
     }

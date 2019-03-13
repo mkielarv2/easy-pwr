@@ -6,31 +6,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.mkielar.pwr.R
-import com.mkielar.pwr.email.api.network.EmailDetailsDownloader
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.mkielar.pwr.email.details.model.EmailDetails
+import com.mkielar.pwr.email.details.viewmodel.DetailsViewModel
+import com.mkielar.pwr.email.details.viewmodel.Lifecycle
 import kotlinx.android.synthetic.main.fragment_email_details.*
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class EmailDetailsFragment : Fragment() {
+class EmailDetailsFragment : Fragment(), Lifecycle.View {
     private val args: EmailDetailsFragmentArgs by navArgs()
-    private val emailDetailsDownloader: EmailDetailsDownloader by inject()
+    private val viewModel: DetailsViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_email_details, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val emailId = args.emailId
-        val disposable = emailDetailsDownloader.fetch(emailId)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe { emailDetails ->
-                webView.loadData(
-                    "<html><head></head><body>${emailDetails.content}</body></html>",
-                    "text/html",
-                    "utf-8"
-                )
-            }
+        viewModel.onViewAttached(this)
+        viewModel.requestEmailDetails(args.emailId)
+    }
+
+    override fun onEmailDetailsReceived(it: EmailDetails) {
+        webView.loadData(it.content, "text/html", "utf-8")
+    }
+
+    override fun onEmailRequestFailed() {
+        Snackbar.make(coordinator, "Download failed, try again later", Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        viewModel.onViewDetached()
+        super.onDestroyView()
     }
 }

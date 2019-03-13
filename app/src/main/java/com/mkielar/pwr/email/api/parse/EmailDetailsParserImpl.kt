@@ -25,7 +25,8 @@ class EmailDetailsParserImpl : EmailDetailsParser {
         val a2 = toKotlinList(a1[a1.size - 1])
         val a3 = toKotlinList(toKotlinList(a1[0])[5])
 
-        val content = a2[a2.size - 2].toString()
+        val contentRaw = a2[a2.size - 2].toString()
+        val content = "<html><head></head><body>$contentRaw</body></html>"
         val timestamp = mainArray[4].toString()
 
         var subject = ""
