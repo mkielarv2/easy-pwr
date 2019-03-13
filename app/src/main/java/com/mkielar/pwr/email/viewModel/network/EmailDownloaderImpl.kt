@@ -1,8 +1,10 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
+import com.mkielar.pwr.credentials.InvalidSessionException
 import com.mkielar.pwr.database.AppDatabase
 import com.mkielar.pwr.email.model.Email
+import com.mkielar.pwr.email.viewModel.parse.EmailParser
 import io.reactivex.Completable
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -16,9 +18,11 @@ class EmailDownloaderImpl(
         val jsessionid = credentialsStore.getJsessionid()
         val appToken = credentialsStore.getAppToken()
 
-        val execute = postRequest(appToken, jsessionid)
+        val response = postRequest(appToken, jsessionid).body()
 
-        val emails = emailParser.parse(execute.body())
+        if (isSessionInvalid(response)) throw InvalidSessionException()
+
+        val emails = emailParser.parse(response)
         insertIntoDatabase(emails)
         it.onComplete()
     }
@@ -28,6 +32,9 @@ class EmailDownloaderImpl(
             .cookie("JSESSIONID", jsessionid)
             .method(Connection.Method.GET)
             .execute()
+
+    private fun isSessionInvalid(response: String) =
+        response.replace("\\n", "").replace("while(1);", "").trim() == "[1101, 'Invalid Session']"
 
     private fun insertIntoDatabase(emails: List<Email>) {
         appDatabase.emailDao().insertEmailList(emails)

@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.parse
 
 import android.util.Log
 import com.mkielar.pwr.email.model.EmailDetails

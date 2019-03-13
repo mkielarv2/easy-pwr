@@ -1,7 +1,8 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.email.model.EmailDetails
+import com.mkielar.pwr.email.viewModel.parse.EmailDetailsParser
 import io.reactivex.Single
 import org.jsoup.Connection
 import org.jsoup.Jsoup

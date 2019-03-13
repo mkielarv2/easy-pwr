@@ -1,30 +1,49 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.credentials.InvalidCredentialsException
+import com.mkielar.pwr.credentials.MissingCredentialsException
 import io.reactivex.Completable
 import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 
 
-class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) : EmailAuthenticator {
+class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) :
+    EmailAuthenticator {
     override fun login(login: String, password: String): Completable = Completable.create { emitter ->
+        auth(login, password).subscribe({
+            storeCredentials(login, password)
+            emitter.onComplete()
+        }, {
+            emitter.onError(it)
+        })
+    }
+
+    override fun reauth(): Completable = Completable.create { emitter ->
+        val (login, password) = credentialsStore.getCredentials()
+        if (login == null || password == null) throw MissingCredentialsException()
+        auth(login, password).subscribe({
+            emitter.onComplete()
+        }, {
+            emitter.onError(it)
+        })
+    }
+
+    private fun auth(login: String, password: String) = Completable.create {
         val response = postRequest(login, password)
 
         val responseBody = JSONObject(response.body()).getJSONObject("iwcp")
 
         if (isLoginSuccessful(responseBody)) {
-            storeCredentials(login, password)
-
             val loginResponse = responseBody.getJSONObject("loginResponse")
             val jsessionid = getJsessionid(loginResponse)
             val token = getToken(loginResponse)
             storeTokens(jsessionid, token)
 
-            emitter.onComplete()
+            it.onComplete()
         } else {
-            emitter.onError(InvalidCredentialsException())
+            it.onError(InvalidCredentialsException())
         }
     }
 

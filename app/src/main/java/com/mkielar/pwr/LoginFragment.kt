@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.mkielar.pwr.credentials.InvalidCredentialsException
-import com.mkielar.pwr.email.viewModel.EmailAuthenticator
-import com.mkielar.pwr.email.viewModel.EmailDownloader
+import com.mkielar.pwr.email.viewModel.network.EmailAuthenticator
+import com.mkielar.pwr.email.viewModel.network.EmailDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*

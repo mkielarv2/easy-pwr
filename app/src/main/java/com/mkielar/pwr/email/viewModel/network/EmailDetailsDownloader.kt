@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.network
 
 import com.mkielar.pwr.email.model.EmailDetails
 import io.reactivex.Single

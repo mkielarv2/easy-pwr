@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mkielar.pwr.email.model.Email
-import com.mkielar.pwr.email.viewModel.EmailDao
+import com.mkielar.pwr.email.viewModel.network.EmailDao
 
 
 @Database(entities = [(Email::class)], version = 1)

@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.parse
 
 import com.mkielar.pwr.email.model.Email
 import java.util.regex.Pattern

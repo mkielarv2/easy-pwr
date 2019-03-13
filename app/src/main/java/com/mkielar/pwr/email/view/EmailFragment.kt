@@ -9,18 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.mkielar.pwr.R
-import com.mkielar.pwr.database.AppDatabase
-import com.mkielar.pwr.email.viewModel.EmailDownloader
 import com.mkielar.pwr.email.viewModel.EmailViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.mkielar.pwr.email.viewModel.Lifecycle
 import kotlinx.android.synthetic.main.fragment_email.*
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class EmailFragment : Fragment() {
-    private val appDatabase: AppDatabase by inject()
-    private val emailDownloader: EmailDownloader by inject()
+class EmailFragment : Fragment(), Lifecycle.View {
+    private val viewModel: EmailViewModel by sharedViewModel()
 
     private val emailRecyclerAdapter = EmailRecyclerAdapter { index ->
         val action = EmailFragmentDirections.actionEmailFragmentToEmailDetailsActivity(index)
@@ -32,35 +29,29 @@ class EmailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
+        viewModel.onViewAttached(this)
 
         swipeRefresh.setOnRefreshListener {
-            emailDownloader.fetch()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe {
-                    swipeRefresh.isRefreshing = false
-                }
+            viewModel.requestDatabaseRefresh()
         }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = emailRecyclerAdapter
 
-        EmailViewModel(appDatabase.emailDao()).emailLiveData.observe(this, Observer {
+        viewModel.emailLiveData.observe(this, Observer {
             emailRecyclerAdapter.setData(it)
         })
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.email_menu, menu)
 
-        val activity = activity
-        if (activity != null) {
+        activity?.run {
             val searchItem = menu.findItem(R.id.action_search)
-            val searchManager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            val searchManager = this.getSystemService(Context.SEARCH_SERVICE) as SearchManager
 
             val searchView = searchItem.actionView as SearchView
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(this.componentName))
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
                     emailRecyclerAdapter.filter.filter(newText)
@@ -72,5 +63,19 @@ class EmailFragment : Fragment() {
                 }
             })
         }
+    }
+
+    override fun onRefreshComplete() {
+        swipeRefresh.isRefreshing = false
+    }
+
+    override fun onRefreshFailed() {
+        swipeRefresh.isRefreshing = false
+        Snackbar.make(coordinator, "Refresh failed, try again later", Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        viewModel.onViewDetached()
+        super.onDestroyView()
     }
 }

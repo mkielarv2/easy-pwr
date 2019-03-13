@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.mkielar.pwr.R
-import com.mkielar.pwr.email.viewModel.EmailDetailsDownloader
+import com.mkielar.pwr.email.viewModel.network.EmailDetailsDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_email_details.*

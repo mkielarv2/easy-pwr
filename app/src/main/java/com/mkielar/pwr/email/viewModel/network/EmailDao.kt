@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.viewModel.network
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
