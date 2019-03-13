@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.mkielar.pwr.email.model.Email
-import com.mkielar.pwr.email.viewModel.network.EmailDao
+import com.mkielar.pwr.email.inbox.model.Email
+import com.mkielar.pwr.email.api.network.EmailDao
 
 
 @Database(entities = [(Email::class)], version = 1)

@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.inbox.viewmodel
 
 interface Lifecycle {
     interface View {
@@ -7,7 +7,7 @@ interface Lifecycle {
     }
 
     interface ViewModel {
-        fun onViewAttached(viewCallback: Lifecycle.View)
+        fun onViewAttached(viewCallback: View)
         fun onViewDetached()
     }
 }

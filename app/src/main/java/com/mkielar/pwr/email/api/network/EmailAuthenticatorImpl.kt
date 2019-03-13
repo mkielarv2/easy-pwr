@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.viewModel.network
+package com.mkielar.pwr.email.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.credentials.InvalidCredentialsException

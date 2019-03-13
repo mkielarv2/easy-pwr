@@ -1,6 +1,6 @@
-package com.mkielar.pwr.email.viewModel.parse
+package com.mkielar.pwr.email.api.parse
 
-import com.mkielar.pwr.email.model.Email
+import com.mkielar.pwr.email.inbox.model.Email
 import java.util.regex.Pattern
 
 class EmailParserImpl : EmailParser {

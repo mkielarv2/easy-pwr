@@ -1,12 +1,12 @@
-package com.mkielar.pwr.email.viewModel
+package com.mkielar.pwr.email.inbox.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.mkielar.pwr.credentials.InvalidSessionException
 import com.mkielar.pwr.database.AppDatabase
-import com.mkielar.pwr.email.model.Email
-import com.mkielar.pwr.email.viewModel.network.EmailAuthenticator
-import com.mkielar.pwr.email.viewModel.network.EmailDownloader
+import com.mkielar.pwr.email.inbox.model.Email
+import com.mkielar.pwr.email.api.network.EmailAuthenticator
+import com.mkielar.pwr.email.api.network.EmailDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

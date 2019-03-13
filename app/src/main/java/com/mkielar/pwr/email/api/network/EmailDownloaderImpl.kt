@@ -1,10 +1,10 @@
-package com.mkielar.pwr.email.viewModel.network
+package com.mkielar.pwr.email.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.credentials.InvalidSessionException
 import com.mkielar.pwr.database.AppDatabase
-import com.mkielar.pwr.email.model.Email
-import com.mkielar.pwr.email.viewModel.parse.EmailParser
+import com.mkielar.pwr.email.inbox.model.Email
+import com.mkielar.pwr.email.api.parse.EmailParser
 import io.reactivex.Completable
 import org.jsoup.Connection
 import org.jsoup.Jsoup

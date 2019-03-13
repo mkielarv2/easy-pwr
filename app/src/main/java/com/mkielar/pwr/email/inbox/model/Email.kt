@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.model
+package com.mkielar.pwr.email.inbox.model
 
 import androidx.room.Entity
 

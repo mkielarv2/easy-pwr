@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.view
+package com.mkielar.pwr.email.inbox.view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import android.widget.Filterable
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.mkielar.pwr.R
-import com.mkielar.pwr.email.model.Email
+import com.mkielar.pwr.email.inbox.model.Email
 
 class EmailRecyclerAdapter(private val onItemClick: (Int) -> Unit) :
     RecyclerView.Adapter<EmailViewHolder>(), Filterable {

@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.view
+package com.mkielar.pwr.email.details.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.mkielar.pwr.R
-import com.mkielar.pwr.email.viewModel.network.EmailDetailsDownloader
+import com.mkielar.pwr.email.api.network.EmailDetailsDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_email_details.*

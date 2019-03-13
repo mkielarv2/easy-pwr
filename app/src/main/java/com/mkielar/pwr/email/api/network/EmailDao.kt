@@ -1,8 +1,8 @@
-package com.mkielar.pwr.email.viewModel.network
+package com.mkielar.pwr.email.api.network
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.mkielar.pwr.email.model.Email
+import com.mkielar.pwr.email.inbox.model.Email
 
 @Dao
 interface EmailDao {

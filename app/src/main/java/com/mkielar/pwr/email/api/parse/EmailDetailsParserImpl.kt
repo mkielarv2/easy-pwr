@@ -1,7 +1,7 @@
-package com.mkielar.pwr.email.viewModel.parse
+package com.mkielar.pwr.email.api.parse
 
 import android.util.Log
-import com.mkielar.pwr.email.model.EmailDetails
+import com.mkielar.pwr.email.details.model.EmailDetails
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ContextFactory
 import org.mozilla.javascript.NativeArray

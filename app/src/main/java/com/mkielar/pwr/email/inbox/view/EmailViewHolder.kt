@@ -1,11 +1,11 @@
-package com.mkielar.pwr.email.view
+package com.mkielar.pwr.email.inbox.view
 
 import android.text.format.DateFormat
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.mkielar.pwr.R
-import com.mkielar.pwr.email.model.Email
+import com.mkielar.pwr.email.inbox.model.Email
 
 class EmailViewHolder(private val cardView: CardView) : RecyclerView.ViewHolder(cardView) {
     fun bind(

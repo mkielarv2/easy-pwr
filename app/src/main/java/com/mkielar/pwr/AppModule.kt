@@ -4,12 +4,12 @@ import androidx.room.Room
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.credentials.CredentialsStoreImpl
 import com.mkielar.pwr.database.AppDatabase
-import com.mkielar.pwr.email.viewModel.EmailViewModel
-import com.mkielar.pwr.email.viewModel.network.*
-import com.mkielar.pwr.email.viewModel.parse.EmailDetailsParser
-import com.mkielar.pwr.email.viewModel.parse.EmailDetailsParserImpl
-import com.mkielar.pwr.email.viewModel.parse.EmailParser
-import com.mkielar.pwr.email.viewModel.parse.EmailParserImpl
+import com.mkielar.pwr.email.inbox.viewmodel.EmailViewModel
+import com.mkielar.pwr.email.api.network.*
+import com.mkielar.pwr.email.api.parse.EmailDetailsParser
+import com.mkielar.pwr.email.api.parse.EmailDetailsParserImpl
+import com.mkielar.pwr.email.api.parse.EmailParser
+import com.mkielar.pwr.email.api.parse.EmailParserImpl
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -30,9 +30,18 @@ object AppModule {
         single { EmailAuthenticatorImpl(get()) as EmailAuthenticator }
 
         single { EmailDetailsParserImpl() as EmailDetailsParser }
-        single { EmailDetailsDownloaderImpl(get(), get()) as EmailDetailsDownloader }
+        single { EmailDetailsDownloaderImpl(
+            get(),
+            get()
+        ) as EmailDetailsDownloader
+        }
 
-        single { EmailDownloaderImpl(get(), get(), get()) as EmailDownloader }
+        single { EmailDownloaderImpl(
+            get(),
+            get(),
+            get()
+        ) as EmailDownloader
+        }
         single { EmailParserImpl() as EmailParser }
     }
 }

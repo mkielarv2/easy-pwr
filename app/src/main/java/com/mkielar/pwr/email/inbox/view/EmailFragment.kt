@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.view
+package com.mkielar.pwr.email.inbox.view
 
 import android.app.SearchManager
 import android.content.Context
@@ -11,8 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mkielar.pwr.R
-import com.mkielar.pwr.email.viewModel.EmailViewModel
-import com.mkielar.pwr.email.viewModel.Lifecycle
+import com.mkielar.pwr.email.inbox.viewmodel.EmailViewModel
+import com.mkielar.pwr.email.inbox.viewmodel.Lifecycle
 import kotlinx.android.synthetic.main.fragment_email.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -20,7 +20,8 @@ class EmailFragment : Fragment(), Lifecycle.View {
     private val viewModel: EmailViewModel by sharedViewModel()
 
     private val emailRecyclerAdapter = EmailRecyclerAdapter { index ->
-        val action = EmailFragmentDirections.actionEmailFragmentToEmailDetailsActivity(index)
+        val action =
+            EmailFragmentDirections.actionEmailFragmentToEmailDetailsActivity(index)
         findNavController().navigate(action)
     }
 
