@@ -24,6 +24,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -57,6 +60,8 @@ dependencies {
     implementation 'org.koin:koin-android:1.0.2'
     implementation 'org.koin:koin-androidx-scope:1.0.2'
     implementation 'org.koin:koin-androidx-viewmodel:1.0.2'
+    //debug database
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     //test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.2-alpha01'

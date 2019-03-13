@@ -31,8 +31,7 @@
         android:label="Email details"
         tools:layout="@layout/fragment_email_details">
         <argument
-            android:name="email_id"
-            android:defaultValue="-1"
-            app:argType="integer" />
+            android:name="email"
+            app:argType="com.mkielar.pwr.email.inbox.model.Email" />
     </fragment>
 </navigation>

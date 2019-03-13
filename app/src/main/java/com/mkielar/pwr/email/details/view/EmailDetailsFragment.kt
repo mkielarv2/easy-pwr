@@ -23,7 +23,7 @@ class EmailDetailsFragment : Fragment(), Lifecycle.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.onViewAttached(this)
-        viewModel.requestEmailDetails(args.emailId)
+        viewModel.requestEmailDetails(args.email.id)
     }
 
     override fun onEmailDetailsReceived(it: EmailDetails) {

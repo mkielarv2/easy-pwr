@@ -19,9 +19,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class EmailFragment : Fragment(), Lifecycle.View {
     private val viewModel: EmailViewModel by sharedViewModel()
 
-    private val emailRecyclerAdapter = EmailRecyclerAdapter { index ->
+    private val emailRecyclerAdapter = EmailRecyclerAdapter { email ->
         val action =
-            EmailFragmentDirections.actionEmailFragmentToEmailDetailsActivity(index)
+            EmailFragmentDirections.actionEmailFragmentToEmailDetailsActivity(email)
         findNavController().navigate(action)
     }
 

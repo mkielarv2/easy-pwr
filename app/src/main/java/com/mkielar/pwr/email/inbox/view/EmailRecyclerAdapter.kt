@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mkielar.pwr.R
 import com.mkielar.pwr.email.inbox.model.Email
 
-class EmailRecyclerAdapter(private val onItemClick: (Int) -> Unit) :
+class EmailRecyclerAdapter(private val onItemClick: (Email) -> Unit) :
     RecyclerView.Adapter<EmailViewHolder>(), Filterable {
     private var emails: List<Email> = emptyList()
     private var filtered: MutableList<Email> = mutableListOf()

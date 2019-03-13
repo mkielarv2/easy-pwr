@@ -10,9 +10,9 @@ import com.mkielar.pwr.email.inbox.model.Email
 class EmailViewHolder(private val cardView: CardView) : RecyclerView.ViewHolder(cardView) {
     fun bind(
         email: Email,
-        onItemClick: (Int) -> Unit
+        onItemClick: (Email) -> Unit
     ) {
-        cardView.setOnClickListener { onItemClick(email.id) }
+        cardView.setOnClickListener { onItemClick(email) }
         cardView.findViewById<AppCompatTextView>(R.id.title).text = email.title
         cardView.findViewById<AppCompatTextView>(R.id.content).text = email.sender
 
