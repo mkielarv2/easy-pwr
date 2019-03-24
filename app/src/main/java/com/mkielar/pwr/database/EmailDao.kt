@@ -1,4 +1,4 @@
-package com.mkielar.pwr.email.api.network
+package com.mkielar.pwr.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

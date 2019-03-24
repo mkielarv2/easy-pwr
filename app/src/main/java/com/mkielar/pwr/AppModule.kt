@@ -11,6 +11,8 @@ import com.mkielar.pwr.email.api.parse.EmailParser
 import com.mkielar.pwr.email.api.parse.EmailParserImpl
 import com.mkielar.pwr.email.details.viewmodel.DetailsViewModel
 import com.mkielar.pwr.email.inbox.viewmodel.EmailViewModel
+import com.mkielar.pwr.jsos.api.network.JsosAuthenticator
+import com.mkielar.pwr.jsos.api.network.JsosAuthenticatorImpl
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -30,6 +32,7 @@ object AppModule {
         single { CredentialsStoreImpl(get()) as CredentialsStore }
 
         single { EmailAuthenticatorImpl(get()) as EmailAuthenticator }
+        single { JsosAuthenticatorImpl(get()) as JsosAuthenticator }
 
         single { EmailDetailsParserImpl() as EmailDetailsParser }
         single {

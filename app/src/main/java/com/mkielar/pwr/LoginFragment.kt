@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.mkielar.pwr.credentials.InvalidCredentialsException
 import com.mkielar.pwr.email.api.network.EmailAuthenticator
 import com.mkielar.pwr.email.api.network.EmailDownloader
+import com.mkielar.pwr.jsos.api.network.JsosAuthenticator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -17,12 +18,14 @@ import org.koin.android.ext.android.inject
 
 class LoginFragment : Fragment() {
     private val emailAuthenticator: EmailAuthenticator by inject()
+    private val jsosAuthenticator: JsosAuthenticator by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_login, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         submit.setOnClickListener(onSubmitClickListener)
+        jsos_submit.setOnClickListener(onJsosSubmitClickListener)
         email_button.setOnClickListener {
             findNavController().navigate(R.id.emailFragment)
         }
@@ -48,6 +51,31 @@ class LoginFragment : Fragment() {
                     .subscribeOn(Schedulers.io())
                     .subscribe()
                 findNavController().navigate(R.id.emailFragment)
+            }, {
+                if (it is InvalidCredentialsException)
+                    Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                else
+                    Toast.makeText(context, "${it.message}", Toast.LENGTH_SHORT).show()
+                it.printStackTrace()
+            })
+    }
+
+    private val onJsosSubmitClickListener = View.OnClickListener {
+        val login = jsos_login_field.text.toString()
+        val password = jsos_password_field.text.toString()
+
+        if (login.isBlank() || password.isBlank()) {
+            Toast.makeText(context, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
+            return@OnClickListener
+        }
+
+        var disposable = jsosAuthenticator.login(login, password)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Toast.makeText(context, "Success!(JSOS)", Toast.LENGTH_SHORT).show()
+
+//                findNavController().navigate(R.id.emailFragment)
             }, {
                 if (it is InvalidCredentialsException)
                     Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show()

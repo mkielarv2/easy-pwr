@@ -6,4 +6,9 @@ interface CredentialsStore {
     fun putTokens(jsessionid: String, appToken: String)
     fun getJsessionid(): String?
     fun getAppToken(): String?
+
+    fun putJsosCredentials(login: String, password: String)
+    fun getJsosCredentials(): Pair<String?, String?>
+    fun putJsosSessionId(jsosSessionId: String)
+    fun getJsosSessionId(): String?
 }
