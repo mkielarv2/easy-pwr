@@ -3,8 +3,8 @@ package com.mkielar.pwr.email.api.network
 import com.mkielar.pwr.credentials.CredentialsStore
 import com.mkielar.pwr.credentials.InvalidSessionException
 import com.mkielar.pwr.database.AppDatabase
-import com.mkielar.pwr.email.inbox.model.Email
 import com.mkielar.pwr.email.api.parse.EmailParser
+import com.mkielar.pwr.email.inbox.model.Email
 import io.reactivex.Completable
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -28,7 +28,7 @@ class EmailDownloaderImpl(
     }
 
     private fun postRequest(appToken: String?, jsessionid: String?): Connection.Response =
-        Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/wmap/mbox.mjs?rev=3&sid=&mbox=INBOX&count=300&date=true&lang=pl&sortby=recv&sortorder=R&start=0&srch=UNDELETED&token=$appToken&dojo.preventCache=1551628616549")
+        Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/wmap/mbox.mjs?rev=3&sid=&mbox=INBOX&count=1&date=true&lang=pl&sortby=recv&sortorder=R&start=0&srch=UNDELETED&token=$appToken&dojo.preventCache=1551628616549")
             .cookie("JSESSIONID", jsessionid)
             .method(Connection.Method.GET)
             .execute()

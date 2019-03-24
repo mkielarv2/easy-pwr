@@ -1,8 +1,9 @@
 package com.mkielar.pwr.email.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
-import com.mkielar.pwr.email.details.model.EmailDetails
+import com.mkielar.pwr.credentials.InvalidSessionException
 import com.mkielar.pwr.email.api.parse.EmailDetailsParser
+import com.mkielar.pwr.email.details.model.EmailDetails
 import io.reactivex.Single
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -16,20 +17,21 @@ class EmailDetailsDownloaderImpl(
         val jsessionid = credentialsStore.getJsessionid()
         val appToken = credentialsStore.getAppToken()
 
-        val response = postRequest(emailId, appToken, jsessionid)
+        val response = postRequest(emailId, appToken, jsessionid).body()
 
-        val emailDetails = emailDetailsParser.parse(response.body())
+        if (isSessionInvalid(response)) throw InvalidSessionException()
+
+        val emailDetails = emailDetailsParser.parse(response)
         it.onSuccess(emailDetails)
     }
 
-    private fun postRequest(
-        emailId: Int,
-        appToken: String?,
-        jsessionid: String?
-    ): Connection.Response {
-        return Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/wmap/msg.mjs?rev=3&sid=&mbox=INBOX&uid=$emailId&process=html%2Cjs%2Ctarget%2Cbinhex%2Clink&security=false&lang=pl&token=$appToken&dojo.preventCache=1551875557460")
+    private fun postRequest(emailId: Int, appToken: String?, jsessionid: String?): Connection.Response =
+        Jsoup.connect("https://s.student.pwr.edu.pl/iwc/svc/wmap/msg.mjs?rev=3&sid=&mbox=INBOX&uid=$emailId&process=html%2Cjs%2Ctarget%2Cbinhex%2Clink&security=false&lang=pl&token=$appToken&dojo.preventCache=1551875557460")
             .cookie("JSESSIONID", jsessionid)
             .method(Connection.Method.GET)
             .execute()
-    }
+
+    private fun isSessionInvalid(response: String) =
+        response.replace("\\n", "").replace("while(1);", "").trim() == "[1101, 'Invalid Session']"
+
 }

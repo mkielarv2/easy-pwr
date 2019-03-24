@@ -1,6 +1,5 @@
 package com.mkielar.pwr.email.api.parse
 
-import android.util.Log
 import com.mkielar.pwr.email.details.model.EmailDetails
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.ContextFactory
@@ -33,7 +32,6 @@ class EmailDetailsParserImpl : EmailDetailsParser {
         var sender = ""
         for (a in a3) {
             if (a is NativeArray) {
-                Log.e("asdaf: ", "$a")
                 val arr = toKotlinList(a)
                 when (arr[0]) {
                     "Subject" -> subject = arr[1].toString()
