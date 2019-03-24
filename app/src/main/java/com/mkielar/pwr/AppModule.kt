@@ -13,6 +13,8 @@ import com.mkielar.pwr.email.details.viewmodel.DetailsViewModel
 import com.mkielar.pwr.email.inbox.viewmodel.EmailViewModel
 import com.mkielar.pwr.jsos.api.network.JsosAuthenticator
 import com.mkielar.pwr.jsos.api.network.JsosAuthenticatorImpl
+import com.mkielar.pwr.jsos.api.network.JsosEmailDownloader
+import com.mkielar.pwr.jsos.api.network.JsosEmailDownloaderImpl
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -42,6 +44,7 @@ object AppModule {
             ) as EmailDetailsDownloader
         }
 
+        single { EmailParserImpl() as EmailParser }
         single {
             EmailDownloaderImpl(
                 get(),
@@ -49,6 +52,7 @@ object AppModule {
                 get()
             ) as EmailDownloader
         }
-        single { EmailParserImpl() as EmailParser }
+
+        single { JsosEmailDownloaderImpl(get(), get()) as JsosEmailDownloader }
     }
 }

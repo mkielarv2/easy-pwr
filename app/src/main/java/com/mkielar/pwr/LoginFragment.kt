@@ -11,6 +11,7 @@ import com.mkielar.pwr.credentials.InvalidCredentialsException
 import com.mkielar.pwr.email.api.network.EmailAuthenticator
 import com.mkielar.pwr.email.api.network.EmailDownloader
 import com.mkielar.pwr.jsos.api.network.JsosAuthenticator
+import com.mkielar.pwr.jsos.api.network.JsosEmailDownloader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -19,6 +20,7 @@ import org.koin.android.ext.android.inject
 class LoginFragment : Fragment() {
     private val emailAuthenticator: EmailAuthenticator by inject()
     private val jsosAuthenticator: JsosAuthenticator by inject()
+    private val jsosEmailDownloader: JsosEmailDownloader by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_login, container, false)
@@ -28,6 +30,17 @@ class LoginFragment : Fragment() {
         jsos_submit.setOnClickListener(onJsosSubmitClickListener)
         email_button.setOnClickListener {
             findNavController().navigate(R.id.emailFragment)
+        }
+        jsos_button.setOnClickListener {
+            jsosEmailDownloader.fetch()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    Toast.makeText(context, "Fetch successful", Toast.LENGTH_SHORT).show()
+                }, {
+                    Toast.makeText(context, "Fetch failed", Toast.LENGTH_SHORT).show()
+                    it.printStackTrace()
+                })
         }
     }
 

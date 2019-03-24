@@ -36,7 +36,7 @@ class EmailViewModel(
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             requestDatabaseRefresh()
-                        }, {
+                        }, { e ->
                             viewCallback?.onRefreshFailed()
                         })
                 } else {

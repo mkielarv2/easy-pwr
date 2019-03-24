@@ -15,13 +15,15 @@ class EmailParserImpl : EmailParser {
             val elements = splitUp(raw)
 
             //todo handle status (elements[3])
+            val title = removeQuotes(elements[5]).trim()
             emails.add(
                 Email(
                     elements[0].toInt(),
                     elements[1].toLong(),
+                    getJsosStatus(title),
                     elements[2].toLong(),
                     removeQuotes(elements[4]),
-                    removeQuotes(elements[5]).trim()
+                    title
                 )
             )
         }
@@ -48,4 +50,7 @@ class EmailParserImpl : EmailParser {
     }
 
     private fun removeQuotes(input: String): String = input.removePrefix("'").removeSuffix("'")
+
+    private fun getJsosStatus(input: String): Int =
+        if (input == "[Edukacja.CL] powiadomienie o otrzymaniu nowego komunikatu") 1 else 0
 }

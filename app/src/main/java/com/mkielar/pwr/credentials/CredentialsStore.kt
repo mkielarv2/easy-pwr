@@ -9,6 +9,6 @@ interface CredentialsStore {
 
     fun putJsosCredentials(login: String, password: String)
     fun getJsosCredentials(): Pair<String?, String?>
-    fun putJsosSessionId(jsosSessionId: String)
-    fun getJsosSessionId(): String?
+    fun putJsosSessionIdCookie(jsosSessionId: String)
+    fun getJsosSessionIdCookie(): String?
 }

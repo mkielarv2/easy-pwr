@@ -60,13 +60,13 @@ class CredentialsStoreImpl(application: Application) : CredentialsStore {
         return login to password
     }
 
-    override fun putJsosSessionId(jsosSessionId: String) {
+    override fun putJsosSessionIdCookie(jsosSessionId: String) {
         sharedPreferences.edit()
             .putString(JSOS_SESSION_ID_KEY, jsosSessionId)
             .apply()
     }
 
-    override fun getJsosSessionId(): String? =
+    override fun getJsosSessionIdCookie(): String? =
         sharedPreferences.getString(JSOS_SESSION_ID_KEY, null)
 
 

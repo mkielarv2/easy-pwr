@@ -6,6 +6,8 @@ import com.mkielar.pwr.credentials.MissingCredentialsException
 import io.reactivex.Completable
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import java.io.IOException
+import java.util.regex.Pattern
 
 class JsosAuthenticatorImpl(
     private val credentialsStore: CredentialsStore
@@ -18,18 +20,24 @@ class JsosAuthenticatorImpl(
     private lateinit var jsosSessionIdCookie: String
 
     override fun login(username: String, password: String): Completable = Completable.create { emitter ->
-        getSessionCookie()
-        getDetails()
-        authenticate(username, password)
-        credentialsStore.putCredentials(username, password)
+        auth(username, password)
+        credentialsStore.putJsosCredentials(username, password)
+        credentialsStore.putJsosSessionIdCookie(jsosSessionIdCookie)
         emitter.onComplete()
     }
 
     override fun reauth(): Completable = Completable.create { emitter ->
         val (login, password) = credentialsStore.getJsosCredentials()
         if (login == null || password == null) throw MissingCredentialsException()
-        authenticate(login, password)
+        auth(login, password)
+        credentialsStore.putJsosSessionIdCookie(jsosSessionIdCookie)
         emitter.onComplete()
+    }
+
+    private fun auth(username: String, password: String) {
+        getSessionCookie()
+        getDetails()
+        requestAuthentication(username, password)
     }
 
     private fun getSessionCookie() {
@@ -54,7 +62,7 @@ class JsosAuthenticatorImpl(
         token = inputs[3].attr("value")
     }
 
-    private fun authenticate(username: String, password: String) {
+    private fun requestAuthentication(username: String, password: String) {
         val redirectUrl = getRedirect(username, password)
 
         val response = Jsoup.connect(redirectUrl)
@@ -63,7 +71,13 @@ class JsosAuthenticatorImpl(
             .followRedirects(false)
             .execute()
 
-        println(response.headers())
+        val pattern = Pattern.compile("JSOSSESSID=.{26}")
+        val matcher = pattern.matcher(response.header("Set-Cookie"))
+        if (matcher.find()) {
+            jsosSessionIdCookie = matcher.group()
+        } else {
+            throw IOException("No JSOSSESSID cookie present in response")
+        }
     }
 
     private fun getRedirect(username: String, password: String): String? {
