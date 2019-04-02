@@ -7,7 +7,7 @@ import android.content.Intent
 class EmailStartServiceReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null) {
-            SchedulerUtil.scheduleJob(context)
+//            SchedulerUtil.scheduleJob(context)
         }
     }
 }

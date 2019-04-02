@@ -15,6 +15,7 @@ import com.mkielar.pwr.jsos.api.network.JsosAuthenticator
 import com.mkielar.pwr.jsos.api.network.JsosAuthenticatorImpl
 import com.mkielar.pwr.jsos.api.network.JsosEmailDownloader
 import com.mkielar.pwr.jsos.api.network.JsosEmailDownloaderImpl
+import com.mkielar.pwr.main.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -30,6 +31,7 @@ object AppModule {
 
         viewModel { EmailViewModel(get(), get(), get()) }
         viewModel { DetailsViewModel(get(), get()) }
+        viewModel { MainViewModel(get(), get(), get()) }
 
         single { CredentialsStoreImpl(get()) as CredentialsStore }
 

@@ -1,8 +1,9 @@
 package com.mkielar.pwr.email.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
+import com.mkielar.pwr.credentials.CredentialsStoreImpl
 import com.mkielar.pwr.credentials.InvalidCredentialsException
-import com.mkielar.pwr.credentials.MissingCredentialsException
+import com.mkielar.pwr.credentials.Keys
 import io.reactivex.Completable
 import org.json.JSONObject
 import org.jsoup.Connection
@@ -21,8 +22,9 @@ class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) :
     }
 
     override fun reauth(): Completable = Completable.create { emitter ->
-        val (login, password) = credentialsStore.getCredentials()
-        if (login == null || password == null) throw MissingCredentialsException()
+        val login = credentialsStore.getValue(Keys.STUDENT_LOGIN)
+        val password = credentialsStore.getValue(Keys.STUDENT_PASSWORD)
+
         auth(login, password).subscribe({
             emitter.onComplete()
         }, {
@@ -60,7 +62,8 @@ class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) :
     private fun isLoginSuccessful(responseBody: JSONObject) = responseBody.getString("error-code") == "0"
 
     private fun storeCredentials(login: String, password: String) {
-        credentialsStore.putCredentials(login, password)
+        credentialsStore.putValue(Keys.STUDENT_LOGIN, login)
+        credentialsStore.putValue(Keys.STUDENT_PASSWORD, password)
     }
 
     private fun getJsessionid(loginResponse: JSONObject) = loginResponse.getString("sessionIdValue")
@@ -68,6 +71,7 @@ class EmailAuthenticatorImpl(private val credentialsStore: CredentialsStore) :
     private fun getToken(loginResponse: JSONObject) = loginResponse.getString("appToken").replace("token=", "")
 
     private fun storeTokens(jsessionid: String, token: String) {
-        credentialsStore.putTokens(jsessionid, token)
+        credentialsStore.putValue(Keys.STUDENT_JSESSIONID, jsessionid)
+        credentialsStore.putValue(Keys.STUDENT_APPTOKEN, token)
     }
 }

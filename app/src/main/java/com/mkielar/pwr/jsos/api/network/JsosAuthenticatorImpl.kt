@@ -1,8 +1,9 @@
 package com.mkielar.pwr.jsos.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
+import com.mkielar.pwr.credentials.CredentialsStoreImpl
 import com.mkielar.pwr.credentials.InvalidCredentialsException
-import com.mkielar.pwr.credentials.MissingCredentialsException
+import com.mkielar.pwr.credentials.Keys
 import io.reactivex.Completable
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -21,16 +22,18 @@ class JsosAuthenticatorImpl(
 
     override fun login(username: String, password: String): Completable = Completable.create { emitter ->
         auth(username, password)
-        credentialsStore.putJsosCredentials(username, password)
-        credentialsStore.putJsosSessionIdCookie(jsosSessionIdCookie)
+        credentialsStore.putValue(Keys.JSOS_LOGIN, username)
+        credentialsStore.putValue(Keys.JSOS_PASSWORD, password)
+        credentialsStore.putValue(Keys.JSOS_SESSION_ID, jsosSessionIdCookie)
         emitter.onComplete()
     }
 
     override fun reauth(): Completable = Completable.create { emitter ->
-        val (login, password) = credentialsStore.getJsosCredentials()
-        if (login == null || password == null) throw MissingCredentialsException()
+        val login = credentialsStore.getValue(Keys.JSOS_LOGIN)
+        val password = credentialsStore.getValue(Keys.JSOS_PASSWORD)
+
         auth(login, password)
-        credentialsStore.putJsosSessionIdCookie(jsosSessionIdCookie)
+        credentialsStore.putValue(Keys.JSOS_SESSION_ID, jsosSessionIdCookie)
         emitter.onComplete()
     }
 

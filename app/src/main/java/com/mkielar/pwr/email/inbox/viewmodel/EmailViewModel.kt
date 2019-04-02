@@ -37,6 +37,7 @@ class EmailViewModel(
                         .subscribe({
                             requestDatabaseRefresh()
                         }, { e ->
+                            e.printStackTrace()
                             viewCallback?.onRefreshFailed()
                         })
                 } else {

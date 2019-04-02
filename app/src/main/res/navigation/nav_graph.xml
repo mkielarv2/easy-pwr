@@ -3,9 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/mainFragment">
 
-
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.mkielar.pwr.main.view.MainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_mainFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.mkielar.pwr.LoginFragment"
@@ -22,8 +29,7 @@
         tools:layout="@layout/fragment_email">
         <action
             android:id="@+id/action_emailFragment_to_emailDetailsActivity"
-            app:destination="@id/emailDetailsFragment">
-        </action>
+            app:destination="@id/emailDetailsFragment"></action>
     </fragment>
     <fragment
         android:id="@+id/emailDetailsFragment"
@@ -34,4 +40,5 @@
             android:name="email"
             app:argType="com.mkielar.pwr.email.inbox.model.Email" />
     </fragment>
+
 </navigation>

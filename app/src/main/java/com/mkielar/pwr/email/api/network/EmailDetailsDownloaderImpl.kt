@@ -1,7 +1,9 @@
 package com.mkielar.pwr.email.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
+import com.mkielar.pwr.credentials.CredentialsStoreImpl
 import com.mkielar.pwr.credentials.InvalidSessionException
+import com.mkielar.pwr.credentials.Keys
 import com.mkielar.pwr.email.api.parse.EmailDetailsParser
 import com.mkielar.pwr.email.details.model.EmailDetails
 import io.reactivex.Single
@@ -14,8 +16,8 @@ class EmailDetailsDownloaderImpl(
     private val emailDetailsParser: EmailDetailsParser
 ) : KoinComponent, EmailDetailsDownloader {
     override fun fetch(emailId: Int): Single<EmailDetails> = Single.create<EmailDetails> {
-        val jsessionid = credentialsStore.getJsessionid()
-        val appToken = credentialsStore.getAppToken()
+        val jsessionid = credentialsStore.getValue(Keys.STUDENT_JSESSIONID)
+        val appToken = credentialsStore.getValue(Keys.STUDENT_APPTOKEN)
 
         val response = postRequest(emailId, appToken, jsessionid).body()
 

@@ -1,7 +1,9 @@
 package com.mkielar.pwr.email.api.network
 
 import com.mkielar.pwr.credentials.CredentialsStore
+import com.mkielar.pwr.credentials.CredentialsStoreImpl
 import com.mkielar.pwr.credentials.InvalidSessionException
+import com.mkielar.pwr.credentials.Keys
 import com.mkielar.pwr.database.AppDatabase
 import com.mkielar.pwr.email.api.parse.EmailParser
 import com.mkielar.pwr.email.inbox.model.Email
@@ -15,8 +17,8 @@ class EmailDownloaderImpl(
     private val emailParser: EmailParser
 ) : EmailDownloader {
     override fun fetch(): Completable = Completable.create {
-        val jsessionid = credentialsStore.getJsessionid()
-        val appToken = credentialsStore.getAppToken()
+        val jsessionid = credentialsStore.getValue(Keys.STUDENT_JSESSIONID)
+        val appToken = credentialsStore.getValue(Keys.STUDENT_APPTOKEN)
 
         val response = postRequest(appToken, jsessionid).body()
 
